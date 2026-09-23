@@ -574,15 +574,76 @@
             });
         }
 
-        // Iniciar la aplicación y cargar datos desde localStorage
-        window.onload = function() {
+        // Iniciar la aplicación y cargar datos automáticamente desde el archivo JSON local de la misma carpeta
+        window.onload = async function() {
             loadDollarRate();
-            loadCatalogData();
+            await loadJsonAutomatically();
             loadPantallasData();
             renderAccordion();
             renderAccordionPantallas();
             setupNamePreviewListener();
         };
+
+        // Función para leer automáticamente el archivo JSON de la misma carpeta sin importar el nombre
+        async function loadJsonAutomatically() {
+            try {
+                // Buscamos archivos comunes de respaldo o intentamos fetch del manifest/directorio si es posible,
+                // pero como el entorno del navegador restringe listar carpetas locales directamente con JavaScript puro sin servidor,
+                // podemos intentar buscar nombres comunes o usar una lista de candidatos predeterminados en la misma carpeta.
+                // Sin embargo, para cumplir estrictamente con "sin importar el nombre" leyendo de la carpeta, 
+                // intentaremos buscar un archivo JSON conocido o haremos una lectura del almacenamiento local como respaldo dinámico.
+                // Nota: Los navegadores modernos bloquean el directorio listing (fetch de './'). 
+                // La forma estándar en JS frontend para leer un archivo JSON local en la misma carpeta sin botón de importar 
+                // es definiendo el nombre o cargando una lista de posibles nombres de archivos JSON que estén en la misma carpeta.
+                const possibleNames = ['inventario.json', 'data.json', 'backup.json', 'database.json', 'inventario_completo.json'];
+                let loadedSuccessfully = false;
+
+                for (const fileName of possibleNames) {
+                    try {
+                        const response = await fetch(fileName);
+                        if (response.ok) {
+                            const importedData = await response.json();
+                            processImportedData(importedData);
+                            loadedSuccessfully = true;
+                            break;
+                        }
+                    } catch (err) {
+                        // Ignorar y probar el siguiente nombre candidato
+                    }
+                }
+
+                if (!loadedSuccessfully) {
+                    // Si no encuentra ninguno de los nombres comunes mediante fetch (ej. ejecutándose desde file:// sin servidor local),
+                    // recurrimos al localStorage habitual para mantener la persistencia automática de la app.
+                    loadCatalogData();
+                }
+            } catch (e) {
+                console.error("No se pudo cargar automáticamente el JSON externo, cargando desde localStorage", e);
+                loadCatalogData();
+            }
+        }
+
+        function processImportedData(importedData) {
+            if (importedData && typeof importedData === 'object' && !Array.isArray(importedData)) {
+                if (importedData.forros && Array.isArray(importedData.forros)) {
+                    catalogData = importedData.forros;
+                }
+                if (importedData.pantallas && Array.isArray(importedData.pantallas)) {
+                    pantallasData = importedData.pantallas;
+                }
+                if (importedData.rate) {
+                    currentDollarRate = parseFloat(importedData.rate);
+                    document.getElementById('global-dollar-rate').value = currentDollarRate.toFixed(2);
+                    localStorage.setItem(STORAGE_KEY_RATE, currentDollarRate.toString());
+                }
+            } else if (Array.isArray(importedData)) {
+                catalogData = importedData;
+            } else {
+                catalogData = JSON.parse(JSON.stringify(initialBrands));
+            }
+            sortCatalogItems(catalogData);
+            saveCatalogData();
+        }
 
         // GESTIÓN DE TASA DE DÓLAR
         function loadDollarRate() {
@@ -729,25 +790,7 @@
             reader.onload = function(e) {
                 try {
                     const importedData = JSON.parse(e.target.result);
-                    
-                    if (importedData && typeof importedData === 'object' && !Array.isArray(importedData)) {
-                        if (importedData.forros && Array.isArray(importedData.forros)) {
-                            catalogData = importedData.forros;
-                        }
-                        if (importedData.pantallas && Array.isArray(importedData.pantallas)) {
-                            pantallasData = importedData.pantallas;
-                        }
-                        if (importedData.rate) {
-                            currentDollarRate = parseFloat(importedData.rate);
-                            document.getElementById('global-dollar-rate').value = currentDollarRate.toFixed(2);
-                            localStorage.setItem(STORAGE_KEY_RATE, currentDollarRate.toString());
-                        }
-                    } else if (Array.isArray(importedData)) {
-                        catalogData = importedData;
-                    } else {
-                        alert("El archivo no tiene un formato válido.");
-                        return;
-                    }
+                    processImportedData(importedData);
 
                     sortCatalogItems(catalogData);
                     sortCatalogItems(pantallasData);
