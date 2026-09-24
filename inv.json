@@ -2,13 +2,13 @@
   "forros": [
     {
       "id": "iphone",
-      "name": "iPhonee",
+      "name": "iPhone",
       "icon": "fa-apple",
       "items": [
         {
           "id": "item_1790180463170",
           "subName": "1.6",
-          "fullName": "iPhone 1.6",
+          "fullName": "iPhone 1.6k",
           "price": 0
         },
         {
