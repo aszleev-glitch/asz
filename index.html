@@ -831,9 +831,9 @@
     </div>
 
     <script>
-        // CONFIGURACIÓN DE JSONBIN CON TUS CREDENCIALES EXACTAS
-        const JSONBIN_BIN_ID = '6ab58383ac6210605af21781'; 
-        const JSONBIN_API_KEY = '$2a$10$O/AkB.t11e8EgbuCh7PwUe86kjQz277DDt.E7vDO/qJIqLTGm.Ziq';   
+        // CONFIGURACIÓN DE JSONBIN (Reemplaza con tu Master Key si tu bin es privado)
+        const JSONBIN_BIN_ID = 'inv'; // Si tu bin ID es alfanumérico largo (ej: 64b8a...), cámbialo aquí
+        const JSONBIN_API_KEY = '';   // Opcional, solo si el Bin es privado
         const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
 
         const STORAGE_KEY = 'forros_catalog_data_v1';
@@ -974,18 +974,12 @@
                 if (importedData && typeof importedData === 'object' && !Array.isArray(importedData)) {
                     if (importedData.forros && Array.isArray(importedData.forros)) {
                         catalogData = importedData.forros;
-                    } else {
-                        catalogData = JSON.parse(JSON.stringify(initialBrands));
                     }
                     if (importedData.pantallas && Array.isArray(importedData.pantallas)) {
                         pantallasData = importedData.pantallas;
-                    } else {
-                        pantallasData = [];
                     }
                     if (importedData.clientes && Array.isArray(importedData.clientes)) {
                         clientesData = ensureClientLists(importedData.clientes);
-                    } else {
-                        clientesData = ensureClientLists([]);
                     }
                     if (importedData.rate) {
                         currentDollarRate = parseFloat(importedData.rate);
@@ -1001,7 +995,7 @@
                 sortCatalogItems(pantallasData);
                 sortClientesItems(clientesData);
                 
-                // Sobrescribir LocalStorage con la verdad absoluta de la nube
+                // Sobrescribir LocalStorage con la verdad de la nube
                 saveCatalogData();
                 savePantallasData();
                 saveClientesData();
@@ -1021,7 +1015,6 @@
                 renderAccordion();
                 renderAccordionPantallas();
                 renderAccordionClientes();
-                calculateBs();
             }
         }
 
@@ -1774,6 +1767,7 @@
                 listCard.className = 'bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all hover:border-purple-300';
                 const itemCount = list.items.length;
                 
+                // Abre siempre "En revisión" por defecto si no está buscando
                 const defaultOpen = list.id === 'lista_revision' && !isSearching;
                 const forceOpen = isSearching || defaultOpen;
 
@@ -1831,21 +1825,18 @@
                                 <h4 class="font-bold text-slate-800 text-sm truncate" title="${item.nombre}">${item.nombre}</h4>
                                 <span class="text-xs text-slate-500">${item.telefono}</span>
                             </div>
-                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 border border-purple-100">#${item.etiqueta || '---'}</span>
+                            <div class="bg-slate-100 text-slate-600 px-2 py-1 rounded-lg text-xs font-bold font-mono tracking-wider shadow-inner">
+                                #${item.etiqueta || 'N/A'}
+                            </div>
                         </div>
-                        <div class="text-xs text-slate-600 mb-3 bg-slate-50 p-2 rounded-lg border border-slate-100">
-                            <p class="font-medium text-slate-700 truncate"><strong class="text-slate-400">Equipo/Detalle:</strong> ${item.detalles}</p>
-                            <p class="mt-1 flex items-center justify-between">
-                                <span><strong class="text-slate-400">Cédula:</strong> ${item.cedula}</span>
-                                <span class="font-bold text-purple-600">$${parseFloat(item.precio || 0).toFixed(2)}</span>
-                            </p>
+                        <div class="text-xs text-slate-600 mb-2 line-clamp-2 italic border-l-2 border-purple-200 pl-2 py-0.5">
+                            ${item.detalles || 'Sin detalles'}
                         </div>
-                        <div class="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-slate-100">
-                            <span><i class="fa-regular fa-calendar mr-1"></i>${dateStr}</span>
-                            <span class="text-purple-600 font-semibold hover:underline">Ver ficha &rarr;</span>
+                        <div class="flex justify-between items-center mt-2 pt-2 border-t border-slate-100">
+                            <span class="text-[10px] font-semibold uppercase text-slate-400"><i class="fa-regular fa-calendar mr-1"></i>${dateStr}</span>
+                            <span class="text-sm font-bold text-purple-600">$${parseFloat(item.precio || 0).toFixed(2)}</span>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
             html += `</div>`;
             return html;
@@ -1866,6 +1857,9 @@
         }
 
         function handleSearchClientes() {
+            document.getElementById('tag-search-input-clientes').value = '';
+            document.getElementById('clear-tag-search-btn-clientes').classList.add('hidden');
+
             const query = document.getElementById('smart-search-input-clientes').value.trim().toLowerCase();
             const clearBtn = document.getElementById('clear-search-btn-clientes');
 
@@ -1878,29 +1872,23 @@
 
             clearBtn.classList.remove('hidden');
 
-            const processedLists = clientesData.map(list => {
-                const matchingItems = list.items.filter(item => {
-                    const nombre = (item.nombre || '').toLowerCase();
-                    const telefono = (item.telefono || '').toLowerCase();
-                    const cedula = (item.cedula || '').toLowerCase();
-                    const etiqueta = (item.etiqueta || '').toLowerCase();
-                    const detalles = (item.detalles || '').toLowerCase();
-                    return nombre.includes(query) || telefono.includes(query) || cedula.includes(query) || etiqueta.includes(query) || detalles.includes(query);
+            const processed = clientesData.map(list => {
+                const matching = list.items.filter(item => {
+                    return (item.nombre || '').toLowerCase().includes(query) ||
+                           (item.cedula || '').toLowerCase().includes(query) ||
+                           (item.telefono || '').toLowerCase().includes(query) ||
+                           (item.etiqueta || '').toLowerCase().includes(query);
                 });
-                return { ...list, items: matchingItems };
+                return { ...list, items: matching };
             });
 
-            renderAccordionClientes(processedLists, true);
-        }
-
-        function clearSearchClientes() {
-            document.getElementById('smart-search-input-clientes').value = '';
-            document.getElementById('clear-search-btn-clientes').classList.add('hidden');
-            sortClientesItems(clientesData);
-            renderAccordionClientes(clientesData, false);
+            renderAccordionClientes(processed, true);
         }
 
         function handleTagSearchClientes() {
+            document.getElementById('smart-search-input-clientes').value = '';
+            document.getElementById('clear-search-btn-clientes').classList.add('hidden');
+
             const query = document.getElementById('tag-search-input-clientes').value.trim().toLowerCase();
             const clearBtn = document.getElementById('clear-tag-search-btn-clientes');
 
@@ -1913,15 +1901,21 @@
 
             clearBtn.classList.remove('hidden');
 
-            const processedLists = clientesData.map(list => {
-                const matchingItems = list.items.filter(item => {
-                    const etiqueta = (item.etiqueta || '').toLowerCase();
-                    return etiqueta.includes(query);
+            const processed = clientesData.map(list => {
+                const matching = list.items.filter(item => {
+                    return (item.etiqueta || '').toLowerCase().includes(query);
                 });
-                return { ...list, items: matchingItems };
+                return { ...list, items: matching };
             });
 
-            renderAccordionClientes(processedLists, true);
+            renderAccordionClientes(processed, true);
+        }
+
+        function clearSearchClientes() {
+            document.getElementById('smart-search-input-clientes').value = '';
+            document.getElementById('clear-search-btn-clientes').classList.add('hidden');
+            sortClientesItems(clientesData);
+            renderAccordionClientes(clientesData, false);
         }
 
         function clearTagSearchClientes() {
@@ -1931,21 +1925,14 @@
             renderAccordionClientes(clientesData, false);
         }
 
-        function getNextClienteTag() {
-            let maxTag = 0;
-            clientesData.forEach(list => {
-                list.items.forEach(item => {
-                    const t = parseInt(item.etiqueta);
-                    if (!isNaN(t) && t > maxTag) maxTag = t;
-                });
-            });
-            return (maxTag + 1).toString().padStart(3, '0');
+        function generateEtiqueta() {
+            return Math.floor(1000 + Math.random() * 9000).toString();
         }
 
         function openAddClienteModal() {
-            const now = new Date();
-            const fechaStr = now.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' - ' + now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('add-cliente-fecha').innerText = fechaStr;
+            const modal = document.getElementById('modal-add-cliente');
+            const dateObj = new Date();
+            document.getElementById('add-cliente-fecha').innerText = dateObj.toLocaleString('es-ES');
             
             document.getElementById('add-cliente-nombre').value = '';
             document.getElementById('add-cliente-telefono').value = '';
@@ -1955,164 +1942,130 @@
             document.getElementById('add-cliente-precio').value = '';
             document.getElementById('add-cliente-observacion').value = '';
             
-            const nextTag = getNextClienteTag();
-            document.getElementById('add-cliente-etiqueta-preview').innerText = nextTag;
+            document.querySelector('input[name="add-cliente-estado"][value="En revisión"]').checked = true;
 
-            const radios = document.querySelectorAll('input[name="add-cliente-estado"]');
-            radios.forEach(r => { if(r.value === 'En revisión') r.checked = true; });
+            const nuevaEtiqueta = generateEtiqueta();
+            document.getElementById('add-cliente-etiqueta-preview').innerText = nuevaEtiqueta;
+            modal.setAttribute('data-new-etiqueta', nuevaEtiqueta);
 
-            const modal = document.getElementById('modal-add-cliente');
             modal.classList.remove('opacity-0', 'pointer-events-none');
         }
 
         function closeAddClienteModal() {
-            const modal = document.getElementById('modal-add-cliente');
-            modal.classList.add('opacity-0', 'pointer-events-none');
+            document.getElementById('modal-add-cliente').classList.add('opacity-0', 'pointer-events-none');
         }
 
         function saveNewCliente(e) {
             e.preventDefault();
-            const nombre = document.getElementById('add-cliente-nombre').value.trim();
-            const telefono = document.getElementById('add-cliente-telefono').value.trim();
-            const cedula = document.getElementById('add-cliente-cedula').value.trim();
-            const direccion = document.getElementById('add-cliente-direccion').value.trim();
-            const detalles = document.getElementById('add-cliente-detalles').value.trim();
-            const precio = parseFloat(document.getElementById('add-cliente-precio').value) || 0;
-            const observacion = document.getElementById('add-cliente-observacion').value.trim();
+            const modal = document.getElementById('modal-add-cliente');
             
-            let estado = 'En revisión';
-            const radios = document.querySelectorAll('input[name="add-cliente-estado"]');
-            radios.forEach(r => { if(r.checked) estado = r.value; });
-
-            const etiqueta = document.getElementById('add-cliente-etiqueta-preview').innerText;
-            const timestamp = Date.now();
-
-            const newItem = {
-                id: 'cli_' + timestamp,
-                nombre,
-                telefono,
-                cedula,
-                direccion,
-                detalles,
-                precio,
-                observacion,
-                estado,
-                etiqueta,
-                timestamp,
-                fechaRegistroStr: document.getElementById('add-cliente-fecha').innerText
+            const nuevoCliente = {
+                id: 'cli_' + Date.now(),
+                etiqueta: modal.getAttribute('data-new-etiqueta'),
+                timestamp: Date.now(),
+                nombre: document.getElementById('add-cliente-nombre').value.trim(),
+                telefono: document.getElementById('add-cliente-telefono').value.trim(),
+                cedula: document.getElementById('add-cliente-cedula').value.trim(),
+                direccion: document.getElementById('add-cliente-direccion').value.trim(),
+                detalles: document.getElementById('add-cliente-detalles').value.trim(),
+                precio: parseFloat(document.getElementById('add-cliente-precio').value) || 0,
+                estado: document.querySelector('input[name="add-cliente-estado"]:checked').value,
+                observacion: document.getElementById('add-cliente-observacion').value.trim()
             };
 
-            const targetListId = getListIdFromEstado(estado);
-            const targetList = clientesData.find(l => l.id === targetListId);
+            const listId = getListIdFromEstado(nuevoCliente.estado);
+            const targetList = clientesData.find(l => l.id === listId);
             if (targetList) {
-                targetList.items.push(newItem);
+                targetList.items.push(nuevoCliente);
+                sortClientesItems(clientesData);
+                saveClientesData();
+                closeAddClienteModal();
+                
+                const searchMain = document.getElementById('smart-search-input-clientes').value.trim();
+                const searchTag = document.getElementById('tag-search-input-clientes').value.trim();
+                if(searchMain) handleSearchClientes(); 
+                else if(searchTag) handleTagSearchClientes();
+                else renderAccordionClientes();
             }
-
-            sortClientesItems(clientesData);
-            saveClientesData();
-            closeAddClienteModal();
-            renderAccordionClientes();
         }
 
-        function openEditClienteModal(listId, itemId) {
+        function openEditClienteModal(listId, clienteId) {
             const list = clientesData.find(l => l.id === listId);
-            if (!list) return;
-            const item = list.items.find(i => i.id === itemId);
-            if (!item) return;
+            if(!list) return;
+            const cliente = list.items.find(c => c.id === clienteId);
+            if(!cliente) return;
 
-            document.getElementById('edit-cliente-id').value = item.id;
+            document.getElementById('edit-cliente-id').value = cliente.id;
             document.getElementById('edit-cliente-list-id').value = listId;
-            document.getElementById('edit-cliente-etiqueta').value = item.etiqueta || '';
-            document.getElementById('edit-cliente-etiqueta-preview').innerText = item.etiqueta || '---';
+            document.getElementById('edit-cliente-etiqueta').value = cliente.etiqueta;
 
-            const dateObj = new Date(item.timestamp || Date.now());
-            const fechaStr = dateObj.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' - ' + dateObj.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('edit-cliente-fecha').innerText = item.fechaRegistroStr || fechaStr;
+            document.getElementById('edit-cliente-fecha').innerText = new Date(cliente.timestamp).toLocaleString('es-ES');
+            
+            document.getElementById('edit-cliente-nombre').value = cliente.nombre || '';
+            document.getElementById('edit-cliente-telefono').value = cliente.telefono || '';
+            document.getElementById('edit-cliente-cedula').value = cliente.cedula || '';
+            document.getElementById('edit-cliente-direccion').value = cliente.direccion || '';
+            document.getElementById('edit-cliente-detalles').value = cliente.detalles || '';
+            document.getElementById('edit-cliente-precio').value = cliente.precio !== undefined ? cliente.precio : '';
+            document.getElementById('edit-cliente-observacion').value = cliente.observacion || '';
+            document.getElementById('edit-cliente-etiqueta-preview').innerText = cliente.etiqueta || 'N/A';
 
-            if (item.fechaCanceladoStr) {
-                document.getElementById('cancel-date-container').classList.remove('hidden');
-                document.getElementById('edit-cliente-fecha-cancelado').innerText = item.fechaCanceladoStr;
-            } else {
-                document.getElementById('cancel-date-container').classList.add('hidden');
-            }
-
-            document.getElementById('edit-cliente-nombre').value = item.nombre || '';
-            document.getElementById('edit-cliente-telefono').value = item.telefono || '';
-            document.getElementById('edit-cliente-cedula').value = item.cedula || '';
-            document.getElementById('edit-cliente-direccion').value = item.direccion || '';
-            document.getElementById('edit-cliente-detalles').value = item.detalles || '';
-            document.getElementById('edit-cliente-precio').value = item.precio !== undefined ? item.precio : '';
-            document.getElementById('edit-cliente-observacion').value = item.observacion || '';
-
-            const radios = document.querySelectorAll('input[name="edit-cliente-estado"]');
-            radios.forEach(r => {
-                if (r.value === item.estado) r.checked = true;
-            });
+            const stateRadio = document.querySelector(`input[name="edit-cliente-estado"][value="${cliente.estado}"]`);
+            if (stateRadio) stateRadio.checked = true;
 
             const modal = document.getElementById('modal-edit-cliente');
             modal.classList.remove('opacity-0', 'pointer-events-none');
         }
 
         function closeEditClienteModal() {
-            const modal = document.getElementById('modal-edit-cliente');
-            modal.classList.add('opacity-0', 'pointer-events-none');
+            document.getElementById('modal-edit-cliente').classList.add('opacity-0', 'pointer-events-none');
         }
 
         function saveEditedCliente(e) {
             e.preventDefault();
-            const itemId = document.getElementById('edit-cliente-id').value;
+            const clienteId = document.getElementById('edit-cliente-id').value;
             const oldListId = document.getElementById('edit-cliente-list-id').value;
-
+            
             const oldList = clientesData.find(l => l.id === oldListId);
-            if (!oldList) return;
-            const itemIndex = oldList.items.findIndex(i => i.id === itemId);
-            if (itemIndex === -1) return;
+            if(!oldList) return;
+            
+            const clienteIndex = oldList.items.findIndex(c => c.id === clienteId);
+            if(clienteIndex === -1) return;
+            
+            const cliente = oldList.items[clienteIndex];
+            
+            cliente.nombre = document.getElementById('edit-cliente-nombre').value.trim();
+            cliente.telefono = document.getElementById('edit-cliente-telefono').value.trim();
+            cliente.cedula = document.getElementById('edit-cliente-cedula').value.trim();
+            cliente.direccion = document.getElementById('edit-cliente-direccion').value.trim();
+            cliente.detalles = document.getElementById('edit-cliente-detalles').value.trim();
+            cliente.precio = parseFloat(document.getElementById('edit-cliente-precio').value) || 0;
+            cliente.observacion = document.getElementById('edit-cliente-observacion').value.trim();
+            
+            const newEstado = document.querySelector('input[name="edit-cliente-estado"]:checked').value;
+            const newListId = getListIdFromEstado(newEstado);
+            
+            cliente.estado = newEstado;
 
-            const item = oldList.items[itemIndex];
-
-            const nombre = document.getElementById('edit-cliente-nombre').value.trim();
-            const telefono = document.getElementById('edit-cliente-telefono').value.trim();
-            const cedula = document.getElementById('edit-cliente-cedula').value.trim();
-            const direccion = document.getElementById('edit-cliente-direccion').value.trim();
-            const detalles = document.getElementById('edit-cliente-detalles').value.trim();
-            const precio = parseFloat(document.getElementById('edit-cliente-precio').value) || 0;
-            const observacion = document.getElementById('edit-cliente-observacion').value.trim();
-
-            let newEstado = item.estado;
-            const radios = document.querySelectorAll('input[name="edit-cliente-estado"]');
-            radios.forEach(r => { if(r.checked) newEstado = r.value; });
-
-            if (item.estado !== newEstado) {
-                if ((newEstado === 'Entregado' || newEstado === 'Cancelado sin entregar') && !item.fechaCanceladoStr) {
-                    const now = new Date();
-                    item.fechaCanceladoStr = now.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' - ' + now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-                } else if (newEstado === 'En revisión' || newEstado === 'Sin cancelar') {
-                    item.fechaCanceladoStr = undefined;
+            if (oldListId !== newListId) {
+                const movedItem = oldList.items.splice(clienteIndex, 1)[0];
+                const targetList = clientesData.find(l => l.id === newListId);
+                if (targetList) {
+                    targetList.items.push(movedItem);
                 }
-            }
-
-            item.nombre = nombre;
-            item.telefono = telefono;
-            item.cedula = cedula;
-            item.direccion = direccion;
-            item.detalles = detalles;
-            item.precio = precio;
-            item.observacion = observacion;
-            item.estado = newEstado;
-
-            oldList.items.splice(itemIndex, 1);
-
-            const targetListId = getListIdFromEstado(newEstado);
-            const targetList = clientesData.find(l => l.id === targetListId);
-            if (targetList) {
-                targetList.items.push(item);
             }
 
             sortClientesItems(clientesData);
             saveClientesData();
             closeEditClienteModal();
-            renderAccordionClientes();
+            
+            const searchMain = document.getElementById('smart-search-input-clientes').value.trim();
+            const searchTag = document.getElementById('tag-search-input-clientes').value.trim();
+            if(searchMain) handleSearchClientes(); 
+            else if(searchTag) handleTagSearchClientes();
+            else renderAccordionClientes();
         }
+
     </script>
 </body>
 </html>
