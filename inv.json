@@ -1,0 +1,1245 @@
+{
+  "forros": [
+    {
+      "id": "iphone",
+      "name": "iPhone",
+      "icon": "fa-apple",
+      "items": [
+        {
+          "id": "item_1790180463170",
+          "subName": "1.6",
+          "fullName": "iPhone 1.6",
+          "price": 0
+        },
+        {
+          "id": "item_1790179772331",
+          "subName": "7/8 Plus",
+          "fullName": "iPhone 7/8 Plus",
+          "price": 0
+        },
+        {
+          "id": "item_1790180310267",
+          "subName": "11 Pro",
+          "fullName": "iPhone 11 Pro",
+          "price": 0
+        },
+        {
+          "id": "item_1790180318333",
+          "subName": "11 Pro Max",
+          "fullName": "iPhone 11 Pro Max",
+          "price": 0
+        },
+        {
+          "id": "item_1790180012736",
+          "subName": "12",
+          "fullName": "iPhone 12",
+          "price": 0
+        },
+        {
+          "id": "item_1790179835391",
+          "subName": "12 6.1",
+          "fullName": "iPhone 12 6.1",
+          "price": 0
+        },
+        {
+          "id": "item_1790180303410",
+          "subName": "12 Pro",
+          "fullName": "iPhone 12 Pro",
+          "price": 0
+        },
+        {
+          "id": "item_1790180350153",
+          "subName": "12 Pro Max",
+          "fullName": "iPhone 12 Pro Max",
+          "price": 0
+        },
+        {
+          "id": "item_1790180333795",
+          "subName": "13",
+          "fullName": "iPhone 13",
+          "price": 0
+        },
+        {
+          "id": "item_1790180326762",
+          "subName": "13 6.1",
+          "fullName": "iPhone 13 6.1",
+          "price": 0
+        },
+        {
+          "id": "item_1790180375610",
+          "subName": "13 Pro",
+          "fullName": "iPhone 13 Pro",
+          "price": 0
+        },
+        {
+          "id": "item_1790180357387",
+          "subName": "13 Pro Max",
+          "fullName": "iPhone 13 Pro Max",
+          "price": 0
+        },
+        {
+          "id": "item_1790180338862",
+          "subName": "14",
+          "fullName": "iPhone 14",
+          "price": 0
+        },
+        {
+          "id": "item_1790179805507",
+          "subName": "14 Plus",
+          "fullName": "iPhone 14 Plus",
+          "price": 0
+        },
+        {
+          "id": "item_1790180381261",
+          "subName": "14 Pro",
+          "fullName": "iPhone 14 Pro",
+          "price": 0
+        },
+        {
+          "id": "item_1790180388590",
+          "subName": "14 Pro Max",
+          "fullName": "iPhone 14 Pro Max",
+          "price": 0
+        },
+        {
+          "id": "item_1790179826435",
+          "subName": "15",
+          "fullName": "iPhone 15",
+          "price": 0
+        },
+        {
+          "id": "item_1790179819830",
+          "subName": "15 Plus",
+          "fullName": "iPhone 15 Plus",
+          "price": 0
+        },
+        {
+          "id": "item_1790180415439",
+          "subName": "15 Pro",
+          "fullName": "iPhone 15 Pro",
+          "price": 0
+        },
+        {
+          "id": "item_1790180409233",
+          "subName": "15 Pro Max",
+          "fullName": "iPhone 15 Pro Max",
+          "price": 0
+        },
+        {
+          "id": "item_1790180424417",
+          "subName": "16",
+          "fullName": "iPhone 16",
+          "price": 0
+        },
+        {
+          "id": "item_1790180456069",
+          "subName": "16 6.1",
+          "fullName": "iPhone 16 6.1",
+          "price": 0
+        },
+        {
+          "id": "item_1790180448858",
+          "subName": "16 Pro",
+          "fullName": "iPhone 16 Pro",
+          "price": 0
+        },
+        {
+          "id": "item_1790180402222",
+          "subName": "16 Pro Max",
+          "fullName": "iPhone 16 Pro Max",
+          "price": 0
+        },
+        {
+          "id": "item_1790180435048",
+          "subName": "16E",
+          "fullName": "iPhone 16E",
+          "price": 0
+        },
+        {
+          "id": "item_1790180482777",
+          "subName": "17",
+          "fullName": "iPhone 17",
+          "price": 0
+        },
+        {
+          "id": "item_1790180470288",
+          "subName": "17 Pro",
+          "fullName": "iPhone 17 Pro",
+          "price": 0
+        },
+        {
+          "id": "item_1790180476654",
+          "subName": "17 Pro Max",
+          "fullName": "iPhone 17 Pro Max",
+          "price": 0
+        },
+        {
+          "id": "item_1790180441644",
+          "subName": "SE4",
+          "fullName": "iPhone SE4",
+          "price": 0
+        },
+        {
+          "id": "item_1790179796491",
+          "subName": "XR",
+          "fullName": "iPhone XR",
+          "price": 0
+        },
+        {
+          "id": "item_1790179781756",
+          "subName": "XS",
+          "fullName": "iPhone XS",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": "infinix-hot",
+      "name": "Infinix Hot",
+      "icon": "fa-mobile-retro",
+      "items": [
+        {
+          "id": "item_1790180606580",
+          "subName": "12",
+          "fullName": "Infinix Hot 12",
+          "price": 0
+        },
+        {
+          "id": "item_1790180625100",
+          "subName": "12 Play",
+          "fullName": "Infinix Hot 12 Play",
+          "price": 0
+        },
+        {
+          "id": "item_1790180602381",
+          "subName": "12 Pro",
+          "fullName": "Infinix Hot 12 Pro",
+          "price": 0
+        },
+        {
+          "id": "item_1790180655254",
+          "subName": "30 Vip 5G 2025",
+          "fullName": "Infinix Hot 30 Vip 5G 2025",
+          "price": 0
+        },
+        {
+          "id": "item_1790180660101",
+          "subName": "40",
+          "fullName": "Infinix Hot 40",
+          "price": 0
+        },
+        {
+          "id": "item_1790180668750",
+          "subName": "40 Pro",
+          "fullName": "Infinix Hot 40 Pro",
+          "price": 0
+        },
+        {
+          "id": "item_1790180664359",
+          "subName": "40i",
+          "fullName": "Infinix Hot 40i",
+          "price": 0
+        },
+        {
+          "id": "item_1790180689037",
+          "subName": "50 4G",
+          "fullName": "Infinix Hot 50 4G",
+          "price": 0
+        },
+        {
+          "id": "item_1790180694200",
+          "subName": "50 Pro",
+          "fullName": "Infinix Hot 50 Pro",
+          "price": 0
+        },
+        {
+          "id": "item_1790180713580",
+          "subName": "50 Pro Plus 4G",
+          "fullName": "Infinix Hot 50 Pro Plus 4G",
+          "price": 0
+        },
+        {
+          "id": "item_1790180736686",
+          "subName": "50i",
+          "fullName": "Infinix Hot 50i",
+          "price": 0
+        },
+        {
+          "id": "item_1790180699159",
+          "subName": "60 Pro",
+          "fullName": "Infinix Hot 60 Pro",
+          "price": 0
+        },
+        {
+          "id": "item_1790180703276",
+          "subName": "60 Pro Plus",
+          "fullName": "Infinix Hot 60 Pro Plus",
+          "price": 0
+        },
+        {
+          "id": "item_1790180756604",
+          "subName": "GT 30 Pro",
+          "fullName": "Infinix Hot GT 30 Pro",
+          "price": 0
+        },
+        {
+          "id": "item_1790180774916",
+          "subName": "GT 30 Pro",
+          "fullName": "Infinix Hot GT 30 Pro",
+          "price": 0
+        },
+        {
+          "id": "item_1790180611745",
+          "subName": "Note 11 Pro",
+          "fullName": "Infinix Hot Note 11 Pro",
+          "price": 0
+        },
+        {
+          "id": "item_1790180645046",
+          "subName": "Note 30",
+          "fullName": "Infinix Hot Note 30",
+          "price": 0
+        },
+        {
+          "id": "item_1790180681499",
+          "subName": "Note 40 Pro",
+          "fullName": "Infinix Hot Note 40 Pro",
+          "price": 0
+        },
+        {
+          "id": "item_1790180727035",
+          "subName": "Note 50 Pro + 5G",
+          "fullName": "Infinix Hot Note 50 Pro + 5G",
+          "price": 0
+        },
+        {
+          "id": "item_1790180741369",
+          "subName": "Smart 9",
+          "fullName": "Infinix Hot Smart 9",
+          "price": 0
+        },
+        {
+          "id": "item_1790180745447",
+          "subName": "Smart 20",
+          "fullName": "Infinix Hot Smart 20",
+          "price": 0
+        },
+        {
+          "id": "item_1790180784869",
+          "subName": "Zero 30",
+          "fullName": "Infinix Hot Zero 30",
+          "price": 0
+        },
+        {
+          "id": "item_1790180781685",
+          "subName": "Zero 40 4G",
+          "fullName": "Infinix Hot Zero 40 4G",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": "spark",
+      "name": "Spark",
+      "icon": "fa-bolt",
+      "items": [
+        {
+          "id": "item_1790180840107",
+          "subName": "40",
+          "fullName": "Spark 40",
+          "price": 0
+        },
+        {
+          "id": "item_1790180851956",
+          "subName": "40 Pro Plus",
+          "fullName": "Spark 40 Pro Plus",
+          "price": 0
+        },
+        {
+          "id": "item_1790180845541",
+          "subName": "40C",
+          "fullName": "Spark 40C",
+          "price": 0
+        },
+        {
+          "id": "item_1790180817664",
+          "subName": "Go 1",
+          "fullName": "Spark Go 1",
+          "price": 0
+        },
+        {
+          "id": "item_1790180827615",
+          "subName": "Go 2023",
+          "fullName": "Spark Go 2023",
+          "price": 0
+        },
+        {
+          "id": "item_1790180824112",
+          "subName": "Go 2025",
+          "fullName": "Spark Go 2025",
+          "price": 0
+        },
+        {
+          "id": "item_1790180870131",
+          "subName": "Pop 6",
+          "fullName": "Spark Pop 6",
+          "price": 0
+        },
+        {
+          "id": "item_1790180813673",
+          "subName": "Pop 9 4G",
+          "fullName": "Spark Pop 9 4G",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": "redmi",
+      "name": "Redmi",
+      "icon": "fa-mobile",
+      "items": [
+        {
+          "id": "item_1790180948021",
+          "subName": "8",
+          "fullName": "Redmi 8",
+          "price": 0
+        },
+        {
+          "id": "item_1790180951104",
+          "subName": "8A",
+          "fullName": "Redmi 8A",
+          "price": 0
+        },
+        {
+          "id": "item_1790180955619",
+          "subName": "9A",
+          "fullName": "Redmi 9A",
+          "price": 0
+        },
+        {
+          "id": "item_1790181004908",
+          "subName": "10S",
+          "fullName": "Redmi 10S",
+          "price": 0
+        },
+        {
+          "id": "item_1790181046693",
+          "subName": "12",
+          "fullName": "Redmi 12",
+          "price": 0
+        },
+        {
+          "id": "item_1790181015695",
+          "subName": "12 4G",
+          "fullName": "Redmi 12 4G",
+          "price": 0
+        },
+        {
+          "id": "item_1790181054709",
+          "subName": "12 4G",
+          "fullName": "Redmi 12 4G",
+          "price": 0
+        },
+        {
+          "id": "item_1790181029728",
+          "subName": "12 5G",
+          "fullName": "Redmi 12 5G",
+          "price": 0
+        },
+        {
+          "id": "item_1790181035659",
+          "subName": "12C",
+          "fullName": "Redmi 12C",
+          "price": 0
+        },
+        {
+          "id": "item_1790181070141",
+          "subName": "13 4G",
+          "fullName": "Redmi 13 4G",
+          "price": 0
+        },
+        {
+          "id": "item_1790181059340",
+          "subName": "13C",
+          "fullName": "Redmi 13C",
+          "price": 0
+        },
+        {
+          "id": "item_1790180978198",
+          "subName": "15",
+          "fullName": "Redmi 15",
+          "price": 0
+        },
+        {
+          "id": "item_1790181125812",
+          "subName": "A5",
+          "fullName": "Redmi A5",
+          "price": 0
+        },
+        {
+          "id": "item_1790181129719",
+          "subName": "A5 4G",
+          "fullName": "Redmi A5 4G",
+          "price": 0
+        },
+        {
+          "id": "item_1790180965013",
+          "subName": "Note 8",
+          "fullName": "Redmi Note 8",
+          "price": 0
+        },
+        {
+          "id": "item_1790180974126",
+          "subName": "Note 9",
+          "fullName": "Redmi Note 9",
+          "price": 0
+        },
+        {
+          "id": "item_1790180992161",
+          "subName": "Note 10",
+          "fullName": "Redmi Note 10",
+          "price": 0
+        },
+        {
+          "id": "item_1790180999393",
+          "subName": "Note 10 4G",
+          "fullName": "Redmi Note 10 4G",
+          "price": 0
+        },
+        {
+          "id": "item_1790181097699",
+          "subName": "Note 13 Pro 4G",
+          "fullName": "Redmi Note 13 Pro 4G",
+          "price": 0
+        },
+        {
+          "id": "item_1790181087661",
+          "subName": "Note 13 Pro 5G",
+          "fullName": "Redmi Note 13 Pro 5G",
+          "price": 0
+        },
+        {
+          "id": "item_1790181112245",
+          "subName": "Note 14 5G",
+          "fullName": "Redmi Note 14 5G",
+          "price": 0
+        },
+        {
+          "id": "item_1790181042101",
+          "subName": "Poco C55",
+          "fullName": "Redmi Poco C55",
+          "price": 0
+        },
+        {
+          "id": "item_1790181183025",
+          "subName": "Poco X5 Pro 5G",
+          "fullName": "Redmi Poco X5 Pro 5G",
+          "price": 0
+        },
+        {
+          "id": "item_1790181154754",
+          "subName": "Poco X7",
+          "fullName": "Redmi Poco X7",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": "samsung",
+      "name": "Samsung",
+      "icon": "fa-tablet-screen-button",
+      "items": [
+        {
+          "id": "item_1790181201588",
+          "subName": "A03 Core",
+          "fullName": "Samsung A03 Core",
+          "price": 0
+        },
+        {
+          "id": "item_1790181206501",
+          "subName": "A03S 166",
+          "fullName": "Samsung A03S 166",
+          "price": 0
+        },
+        {
+          "id": "item_1790181216027",
+          "subName": "A04",
+          "fullName": "Samsung A04",
+          "price": 0
+        },
+        {
+          "id": "item_1790181221453",
+          "subName": "A5",
+          "fullName": "Samsung A5",
+          "price": 0
+        },
+        {
+          "id": "item_1790181226600",
+          "subName": "A5 4G",
+          "fullName": "Samsung A05 4G",
+          "price": 0
+        },
+        {
+          "id": "item_1790181263570",
+          "subName": "A05S",
+          "fullName": "Samsung A05S",
+          "price": 0
+        },
+        {
+          "id": "item_1790181268831",
+          "subName": "A10",
+          "fullName": "Samsung A10",
+          "price": 0
+        },
+        {
+          "id": "item_1790181273614",
+          "subName": "A10S",
+          "fullName": "Samsung A10S",
+          "price": 0
+        },
+        {
+          "id": "item_1790181287553",
+          "subName": "A13 5G",
+          "fullName": "Samsung A13 5G",
+          "price": 0
+        },
+        {
+          "id": "item_1790181279053",
+          "subName": "A15",
+          "fullName": "Samsung A15",
+          "price": 0
+        },
+        {
+          "id": "item_1790181300364",
+          "subName": "A20",
+          "fullName": "Samsung A20",
+          "price": 0
+        },
+        {
+          "id": "item_1790181318946",
+          "subName": "A23 4G",
+          "fullName": "Samsung A23 4G",
+          "price": 0
+        },
+        {
+          "id": "item_1790181325141",
+          "subName": "A25 161MM",
+          "fullName": "Samsung A25 161MM",
+          "price": 0
+        },
+        {
+          "id": "item_1790181306738",
+          "subName": "A30",
+          "fullName": "Samsung A30",
+          "price": 0
+        },
+        {
+          "id": "item_1790181329761",
+          "subName": "A33",
+          "fullName": "Samsung A33",
+          "price": 0
+        },
+        {
+          "id": "item_1790181353249",
+          "subName": "A34",
+          "fullName": "Samsung A34",
+          "price": 0
+        },
+        {
+          "id": "item_1790181344270",
+          "subName": "A34 5G",
+          "fullName": "Samsung A34 5G",
+          "price": 0
+        },
+        {
+          "id": "item_1790181336722",
+          "subName": "A53",
+          "fullName": "Samsung A53",
+          "price": 0
+        },
+        {
+          "id": "item_1790181370140",
+          "subName": "A54",
+          "fullName": "Samsung A54",
+          "price": 0
+        },
+        {
+          "id": "item_1790181362104",
+          "subName": "A56",
+          "fullName": "Samsung A56",
+          "price": 0
+        },
+        {
+          "id": "item_1790181312182",
+          "subName": "S21 Ultra",
+          "fullName": "Samsung S21 Ultra",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": "camon",
+      "name": "Camon",
+      "icon": "fa-camera-retro",
+      "items": [
+        {
+          "id": "item_1790180565574",
+          "subName": "20 Pro 4G",
+          "fullName": "Camon 20 Pro 4G",
+          "price": 0
+        },
+        {
+          "id": "item_1790180536628",
+          "subName": "30",
+          "fullName": "Camon 30",
+          "price": 0
+        },
+        {
+          "id": "item_1790180543164",
+          "subName": "30 4/5G",
+          "fullName": "Camon 30 4/5G",
+          "price": 0
+        },
+        {
+          "id": "item_1790180558948",
+          "subName": "30 4G",
+          "fullName": "Camon 30 4G",
+          "price": 0
+        },
+        {
+          "id": "item_1790180572925",
+          "subName": "30 Pro 5G",
+          "fullName": "Camon 30 Pro 5G",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": "pova",
+      "name": "Pova",
+      "icon": "fa-microchip",
+      "items": [
+        {
+          "id": "item_1790180897010",
+          "subName": "4 Pro",
+          "fullName": "Pova 4 Pro",
+          "price": 0
+        },
+        {
+          "id": "item_1790180884428",
+          "subName": "4G",
+          "fullName": "Pova 4G",
+          "price": 0
+        },
+        {
+          "id": "item_1790180912551",
+          "subName": "6",
+          "fullName": "Pova 6",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": "honor",
+      "name": "Honor",
+      "icon": "fa-shield-halved",
+      "items": [
+        {
+          "id": "item_1790181475956",
+          "subName": "400 Lite",
+          "fullName": "Honor 400 Lite",
+          "price": 0
+        },
+        {
+          "id": "item_1790181455446",
+          "subName": "Magic 5 Lite",
+          "fullName": "Honor Magic 5 Lite",
+          "price": 0
+        },
+        {
+          "id": "item_1790181442743",
+          "subName": "Play 9A",
+          "fullName": "Honor Play 9A",
+          "price": 0
+        },
+        {
+          "id": "item_1790181435063",
+          "subName": "X5B",
+          "fullName": "Honor X5B",
+          "price": 0
+        },
+        {
+          "id": "item_1790181471393",
+          "subName": "X8B",
+          "fullName": "Honor X8B",
+          "price": 0
+        },
+        {
+          "id": "item_1790181461085",
+          "subName": "X8C",
+          "fullName": "Honor X8C",
+          "price": 0
+        },
+        {
+          "id": "item_1790181450189",
+          "subName": "X9A",
+          "fullName": "Honor X9A",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": "vivo",
+      "name": "Vivo",
+      "icon": "fa-mobile-screen",
+      "items": [
+        {
+          "id": "item_1790181385153",
+          "subName": "Y18",
+          "fullName": "Vivo Y18",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": "realme",
+      "name": "Realme",
+      "icon": "fa-grip-vertical",
+      "items": [
+        {
+          "id": "item_1790181584934",
+          "subName": "11 5G",
+          "fullName": "Realme 11 5G",
+          "price": 0
+        },
+        {
+          "id": "item_1790181591927",
+          "subName": "12 Pro + 5G",
+          "fullName": "Realme 12 Pro + 5G",
+          "price": 0
+        },
+        {
+          "id": "item_1790181572571",
+          "subName": "C21Y",
+          "fullName": "Realme C21Y",
+          "price": 0
+        }
+      ]
+    }
+  ],
+  "pantallas": [
+    {
+      "id": "brand_p_1790187109372",
+      "name": "Iphone",
+      "icon": "fa-desktop",
+      "items": [
+        {
+          "id": "item_p_1790187125849",
+          "fullName": "Iphone 11",
+          "price": 40
+        },
+        {
+          "id": "item_p_1790187135510",
+          "fullName": "Iphone XR",
+          "price": 35
+        }
+      ]
+    },
+    {
+      "id": "brand_p_1790187256239",
+      "name": "Samsung",
+      "icon": "fa-desktop",
+      "items": [
+        {
+          "id": "item_p_1790187274152",
+          "fullName": "Samsung A02",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187470066",
+          "fullName": "Samsung A03/A02S",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187298242",
+          "fullName": "Samsung A04",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187497329",
+          "fullName": "Samsung A04S",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187311560",
+          "fullName": "Samsung A05",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187515672",
+          "fullName": "Samsung A05S",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187325517",
+          "fullName": "Samsung A06",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187533412",
+          "fullName": "Samsung A07",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187387164",
+          "fullName": "Samsung A10",
+          "price": 20
+        },
+        {
+          "id": "item_p_1790187589134",
+          "fullName": "Samsung A10S",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187407753",
+          "fullName": "Samsung A13/A23",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187618711",
+          "fullName": "Samsung A14",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187432144",
+          "fullName": "Samsung A20S",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187627999",
+          "fullName": "Samsung J4/J6 Plus",
+          "price": 20
+        }
+      ]
+    },
+    {
+      "id": "brand_p_1790187717566",
+      "name": "Redmi/Xiaomi",
+      "icon": "fa-desktop",
+      "items": [
+        {
+          "id": "item_p_1790187754528",
+          "fullName": "Redmi/Xiaomi 8/8A",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187849363",
+          "fullName": "Redmi/Xiaomi 9A",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187871038",
+          "fullName": "Redmi/Xiaomi 9C",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790188025601",
+          "fullName": "Redmi/Xiaomi 10",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187888970",
+          "fullName": "Redmi/Xiaomi 10A",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187881735",
+          "fullName": "Redmi/Xiaomi 10C",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790188081941",
+          "fullName": "Redmi/Xiaomi 12",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187773737",
+          "fullName": "Redmi/Xiaomi 12C",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187904747",
+          "fullName": "Redmi/Xiaomi 13C",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187782577",
+          "fullName": "Redmi/Xiaomi 14C",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187916070",
+          "fullName": "Redmi/Xiaomi 15C",
+          "price": 30
+        },
+        {
+          "id": "item_p_1790187810997",
+          "fullName": "Redmi/Xiaomi Note 8",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187946657",
+          "fullName": "Redmi/Xiaomi Note 8 Pro",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187824264",
+          "fullName": "Redmi/Xiaomi Note 9",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187963741",
+          "fullName": "Redmi/Xiaomi Note 9 Pro",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790187981297",
+          "fullName": "Redmi/Xiaomi Note 9S",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790188008160",
+          "fullName": "Redmi/Xiaomi Note 11 Incel",
+          "price": 30
+        }
+      ]
+    },
+    {
+      "id": "brand_p_1790188157900",
+      "name": "Tecno",
+      "icon": "fa-desktop",
+      "items": [
+        {
+          "id": "item_p_1790188213819",
+          "fullName": "Tecno 6 GO",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790188410845",
+          "fullName": "Tecno 8C",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790188230909",
+          "fullName": "Tecno 10 Pro",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790188422092",
+          "fullName": "Tecno 20 Pro",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790188243408",
+          "fullName": "Tecno 30C",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790188431402",
+          "fullName": "Tecno Go 1",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790188267349",
+          "fullName": "Tecno GO 1S",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790188439335",
+          "fullName": "Tecno Go 2",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790188484645",
+          "fullName": "Tecno Go 3",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790188282698",
+          "fullName": "Tecno GO 2022",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790188472950",
+          "fullName": "Tecno GO 2023",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790188294786",
+          "fullName": "Tecno GO 2024",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790188498787",
+          "fullName": "Tecno Pop 5 LTE",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790188307419",
+          "fullName": "Tecno Pop 7",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790188328344",
+          "fullName": "Tecno Pova 5",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790188340501",
+          "fullName": "Tecno Spark 6",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790188392605",
+          "fullName": "Tecno Spark 30",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790188548136",
+          "fullName": "Tecno Spark 40",
+          "price": 25
+        }
+      ]
+    },
+    {
+      "id": "brand_p_1790188577930",
+      "name": "Honor",
+      "icon": "fa-desktop",
+      "items": [
+        {
+          "id": "item_p_1790188869498",
+          "fullName": "Honor X5B",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790188911432",
+          "fullName": "Honor X6A",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790188879910",
+          "fullName": "Honor X8B",
+          "price": 25
+        }
+      ]
+    },
+    {
+      "id": "brand_p_1790189017287",
+      "name": "Infinix Hot",
+      "icon": "fa-desktop",
+      "items": [
+        {
+          "id": "item_p_1790190004364",
+          "fullName": "Infinix Hot 10i",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790189050336",
+          "fullName": "Infinix Hot 12 Play",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790190081640",
+          "fullName": "Infinix Hot 20",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790189076701",
+          "fullName": "Infinix Hot 20 Play",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790189033901",
+          "fullName": "Infinix Hot 20C",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790190236635",
+          "fullName": "Infinix Hot 20i",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790189088315",
+          "fullName": "Infinix Hot 30",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790189122827",
+          "fullName": "Infinix Hot 30 Play",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790190249826",
+          "fullName": "Infinix Hot 30i",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790189156366",
+          "fullName": "Infinix Hot 40 Pro",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790190264043",
+          "fullName": "Infinix Hot 40i",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790190305812",
+          "fullName": "Infinix Hot 50",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790189978508",
+          "fullName": "Infinix Hot 50i",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790190322095",
+          "fullName": "Infinix Hot 60",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790190353020",
+          "fullName": "Infinix Hot 60i",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790190419341",
+          "fullName": "Infinix Hot Smart 7",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790190374076",
+          "fullName": "Infinix Hot Smart 8",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790190400365",
+          "fullName": "Infinix Hot Smart 9",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790190509498",
+          "fullName": "Infinix Hot Smart 10",
+          "price": 25
+        },
+        {
+          "id": "item_p_1790190447417",
+          "fullName": "Infinix Hot Smart 20",
+          "price": 30
+        }
+      ]
+    }
+  ],
+  "rate": 853.5
+}
