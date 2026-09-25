@@ -212,7 +212,7 @@
                     <p class="text-sm text-slate-500">Haz clic en una marca para ver o añadir modelos</p>
                 </div>
                 <div class="text-xs font-semibold bg-sky-50 text-sky-700 px-3 py-1.5 rounded-full border border-sky-100 self-start sm:self-auto flex items-center gap-2">
-                    <i class="fa-solid fa-database"></i> Sincronizado con LocalStorage
+                    <i class="fa-solid fa-database"></i> Sincronizado con JSON
                 </div>
             </div>
 
@@ -273,7 +273,7 @@
                     <p class="text-sm text-slate-500">Crea o selecciona una lista para gestionar pantallas</p>
                 </div>
                 <div class="text-xs font-semibold bg-amber-50 text-amber-700 px-3 py-1.5 rounded-full border border-amber-200 self-start sm:self-auto flex items-center gap-2">
-                    <i class="fa-solid fa-database"></i> Sincronizado con LocalStorage
+                    <i class="fa-solid fa-database"></i> Sincronizado con JSON
                 </div>
             </div>
 
@@ -328,7 +328,7 @@
                     <p class="text-sm text-slate-500">Administra los clientes activos y registros de taller</p>
                 </div>
                 <div class="text-xs font-semibold bg-purple-50 text-purple-700 px-3 py-1.5 rounded-full border border-purple-200 self-start sm:self-auto flex items-center gap-2">
-                    <i class="fa-solid fa-database"></i> Sincronizado con LocalStorage
+                    <i class="fa-solid fa-database"></i> Sincronizado con JSON
                 </div>
             </div>
 
@@ -935,13 +935,96 @@
 
         window.onload = function() {
             loadDollarRate();
-            loadCatalogData();
-            loadPantallasData();
-            loadClientesData();
-            renderAccordion();
-            renderAccordionPantallas();
-            renderAccordionClientes();
+            fetchExternalData(); 
         };
+
+        async function fetchExternalData() {
+            try {
+                const response = await fetch(JSON_FILE_URL, { cache: "no-store" });
+                if (!response.ok) throw new Error('Error al cargar el JSON externo');
+                
+                const importedData = await response.json();
+                
+                let storedForros = [];
+                let storedPantallas = [];
+                let storedClientes = [];
+                try {
+                    const sf = localStorage.getItem(STORAGE_KEY);
+                    if (sf) storedForros = JSON.parse(sf);
+                    const sp = localStorage.getItem(STORAGE_KEY_PANTALLAS);
+                    if (sp) storedPantallas = JSON.parse(sp);
+                    const sc = localStorage.getItem(STORAGE_KEY_CLIENTES);
+                    if (sc) storedClientes = JSON.parse(sc);
+                } catch(e) {}
+
+                const forrosPriceMap = {};
+                storedForros.forEach(brand => {
+                    if(brand.items) brand.items.forEach(item => forrosPriceMap[item.id] = item.price);
+                });
+
+                const pantallasPriceMap = {};
+                storedPantallas.forEach(brand => {
+                    if(brand.items) brand.items.forEach(item => pantallasPriceMap[item.id] = item.price);
+                });
+
+                if (importedData && typeof importedData === 'object' && !Array.isArray(importedData)) {
+                    if (importedData.forros && Array.isArray(importedData.forros)) {
+                        catalogData = importedData.forros;
+                    }
+                    if (importedData.pantallas && Array.isArray(importedData.pantallas)) {
+                        pantallasData = importedData.pantallas;
+                    }
+                    if (importedData.clientes && Array.isArray(importedData.clientes)) {
+                        clientesData = ensureClientLists(importedData.clientes);
+                    } else if (storedClientes.length > 0) {
+                        clientesData = ensureClientLists(storedClientes);
+                    } else {
+                        clientesData = ensureClientLists([]);
+                    }
+                } else if (Array.isArray(importedData)) {
+                    catalogData = importedData;
+                    if (storedClientes.length > 0) clientesData = ensureClientLists(storedClientes);
+                    else clientesData = ensureClientLists([]);
+                }
+
+                catalogData.forEach(brand => {
+                    if(brand.items) {
+                        brand.items.forEach(item => {
+                            if (forrosPriceMap[item.id] !== undefined) item.price = forrosPriceMap[item.id];
+                        });
+                    }
+                });
+
+                pantallasData.forEach(brand => {
+                    if(brand.items) {
+                        brand.items.forEach(item => {
+                            if (pantallasPriceMap[item.id] !== undefined) item.price = pantallasPriceMap[item.id];
+                        });
+                    }
+                });
+
+                sortCatalogItems(catalogData);
+                sortCatalogItems(pantallasData);
+                sortClientesItems(clientesData);
+                
+                saveCatalogData();
+                savePantallasData();
+                saveClientesData();
+                
+                renderAccordion();
+                renderAccordionPantallas();
+                renderAccordionClientes();
+
+            } catch(error) {
+                console.warn("No se pudo leer el JSON externo, procediendo a cargar desde LocalStorage:", error);
+                loadCatalogData();
+                loadPantallasData();
+                loadClientesData();
+                renderAccordion();
+                renderAccordionPantallas();
+                renderAccordionClientes();
+            }
+        }
 
         function loadDollarRate() {
             try {
@@ -949,7 +1032,9 @@
                 if (storedRate && !isNaN(parseFloat(storedRate))) {
                     currentDollarRate = parseFloat(storedRate);
                 }
-            } catch(e) {}
+            } catch(e) {
+                console.error("Error leyendo tasa", e);
+            }
             document.getElementById('global-dollar-rate').value = currentDollarRate.toFixed(2);
             calculateBs();
         }
@@ -1700,7 +1785,8 @@
                 const listCard = document.createElement('div');
                 listCard.className = `bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all ${cardColorHover}`;
                 const itemCount = list.items.length;
-                const forceOpen = isSearching;
+                
+                const forceOpen = isSearching ? true : (list.id === 'lista_revision'); 
 
                 let buttonsHtml = '';
                 if (list.id === 'lista_revision' || list.id === 'lista_sincancelar') {
@@ -1747,53 +1833,74 @@
         function renderBrandItemsClientes(list) {
             if (list.items.length === 0) {
                 const msg = `No hay registros en esta lista en este momento.`;
-                const btnHtml = (list.id === 'lista_revision' || list.id === 'lista_sincancelar') 
-                    ? `<button onclick="openAddClienteModal()" class="mt-3 px-3 py-1.5 text-xs font-semibold bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-lg shadow-sm transition-all inline-flex items-center gap-1.5"><i class="fa-solid fa-plus text-purple-500"></i> Registrar Cliente</button>`
-                    : '';
-                return `<div class="text-center py-8 px-4 border-2 border-dashed border-slate-200 rounded-xl"><i class="fa-regular fa-folder-open text-slate-300 text-3xl mb-2 block"></i><p class="text-sm font-medium text-slate-500">${msg}</p>${btnHtml}</div>`;
+                const btnHtml = (list.id === 'lista_revision' || list.id === 'lista_sincancelar') ? `<button onclick="openAddClienteModal()" class="mt-3 px-3 py-1.5 text-xs font-semibold bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-lg shadow-sm transition-all inline-flex items-center gap-1.5"><i class="fa-solid fa-plus text-purple-500"></i> Añadir Cliente</button>` : '';
+                
+                return `
+                    <div class="text-center py-8 px-4 border-2 border-dashed border-slate-200 rounded-xl">
+                        <i class="fa-regular fa-folder-open text-slate-300 text-3xl mb-2 block"></i>
+                        <p class="text-sm font-medium text-slate-500">${msg}</p>
+                        ${btnHtml}
+                    </div>
+                `;
             }
 
-            let html = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">`;
+            let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-3">`;
+            
             list.items.forEach(item => {
-                const formattedPrice = parseFloat(item.price || 0).toFixed(2);
-                const bsPrice = new Intl.NumberFormat('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format((item.price * currentDollarRate));
+                const formattedPrice = parseFloat(item.precio || 0).toFixed(2);
+                const bsPrice = new Intl.NumberFormat('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(((item.precio || 0) * currentDollarRate));
                 
-                let estadoBadgeClass = 'bg-purple-50 text-purple-700 border-purple-200';
-                if (item.estado === 'Sin cancelar') estadoBadgeClass = 'bg-blue-50 text-blue-700 border-blue-200';
-                else if (item.estado === 'Entregado') estadoBadgeClass = 'bg-green-50 text-green-700 border-green-200';
-                else if (item.estado === 'Cancelado sin entregar') estadoBadgeClass = 'bg-rose-50 text-rose-700 border-rose-200';
+                let statusBadgeColor = 'bg-purple-100 text-purple-700 border-purple-200';
+                if (item.estado === 'Entregado') statusBadgeColor = 'bg-green-100 text-green-700 border-green-200';
+                else if (item.estado === 'Sin cancelar') statusBadgeColor = 'bg-blue-100 text-blue-700 border-blue-200';
+                else if (item.estado === 'Cancelado sin entregar') statusBadgeColor = 'bg-rose-100 text-rose-700 border-rose-200';
 
                 html += `
-                    <div class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow gap-3">
-                        <div class="flex items-start justify-between gap-2">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden">
+                        <div class="flex items-start justify-between gap-2 mb-2">
                             <div>
-                                <span class="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-md ${estadoBadgeClass} mb-1.5">
-                                    <i class="fa-solid fa-tag text-[10px]"></i> #${item.etiqueta || '---'}
+                                <span class="inline-block px-2 py-0.5 text-[10px] font-extrabold uppercase rounded-full border ${statusBadgeColor} mb-1">
+                                    ${item.estado || 'En revisión'}
                                 </span>
-                                <h4 class="font-bold text-slate-800 text-sm">${item.nombre}</h4>
-                                <p class="text-xs text-slate-500 mt-0.5"><i class="fa-solid fa-phone text-[10px] mr-1 text-slate-400"></i>${item.telefono} | C.I: ${item.cedula}</p>
+                                <h4 class="font-bold text-slate-800 text-base leading-snug">${item.nombre || 'Sin Nombre'}</h4>
+                                <p class="text-xs text-slate-500 flex items-center gap-2 mt-0.5">
+                                    <span><i class="fa-solid fa-id-card text-slate-400 mr-1"></i>${item.cedula || 'N/A'}</span>
+                                    <span><i class="fa-solid fa-phone text-slate-400 mr-1"></i>${item.telefono || 'N/A'}</span>
+                                </p>
                             </div>
-                            <span class="text-xs font-semibold px-2 py-1 bg-slate-100 text-slate-600 rounded-lg shrink-0">${item.estado}</span>
-                        </div>
-                        <div class="text-xs text-slate-600 bg-slate-50 p-2 rounded-lg border border-slate-100">
-                            <span class="font-semibold text-slate-700">Detalle:</span> ${item.detalles}
-                        </div>
-                        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-xs text-slate-400">Reparo:</span>
-                                <span class="text-sm font-bold text-purple-600">$${formattedPrice}</span>
-                                <span class="text-[11px] font-medium text-slate-500 border-l border-slate-300 pl-1.5 ml-1 leading-none h-3">${bsPrice} Bs</span>
+                            <div class="bg-purple-600 text-white text-xs font-black px-2.5 py-1 rounded-lg shadow-sm flex items-center gap-1 shrink-0">
+                                <i class="fa-solid fa-tag text-[10px]"></i> #${item.etiqueta || '0'}
                             </div>
-                            <div class="flex items-center space-x-1">
-                                <button onclick="openEditClienteModal('${list.id}', '${item.id}')" title="Panel / Editar Cliente" class="px-2.5 py-1 text-xs font-semibold bg-purple-50 text-purple-600 hover:bg-purple-100 rounded-lg transition-colors flex items-center gap-1">
-                                    <i class="fa-solid fa-address-card"></i> Panel
+                        </div>
+
+                        <div class="text-xs text-slate-600 space-y-1 mb-3 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                            <p><strong class="text-slate-700">Detalles:</strong> ${item.detalles || 'Sin detalles'}</p>
+                            ${item.direccion ? `<p><strong class="text-slate-700">Dirección:</strong> ${item.direccion}</p>` : ''}
+                            ${item.observacion ? `<p><strong class="text-slate-700">Obs:</strong> ${item.observacion}</p>` : ''}
+                            <p class="text-[11px] text-slate-400 pt-1 border-t border-slate-200/60 flex justify-between">
+                                <span><i class="fa-regular fa-clock mr-1"></i>${item.fecha || ''}</span>
+                                ${item.fechaCancelado ? `<span class="text-rose-500 font-medium">Final: ${item.fechaCancelado}</span>` : ''}
+                            </p>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-2 border-t border-slate-100 mt-auto">
+                            <div>
+                                <span class="text-xs text-slate-400">Precio:</span>
+                                <span class="text-sm font-bold text-purple-700">$${formattedPrice}</span>
+                                <span class="text-[11px] font-medium text-slate-500 ml-1">(${bsPrice} Bs)</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <button onclick="openEditClienteModal('${list.id}', '${item.id}')" title="Panel / Editar Cliente" class="p-2 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors text-xs font-medium flex items-center gap-1">
+                                    <i class="fa-solid fa-pen"></i>
+                                    <span class="hidden sm:inline">Editar</span>
                                 </button>
-                                <button onclick="deleteCliente('${list.id}', '${item.id}')" title="Eliminar" class="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
-                                    <i class="fa-solid fa-trash-can text-xs"></i>
+                                <button onclick="deleteCliente('${list.id}', '${item.id}')" title="Eliminar Cliente" class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors text-xs">
+                                    <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </div>
                         </div>
-                    </div>`;
+                    </div>
+                `;
             });
             html += `</div>`;
             return html;
@@ -1813,10 +1920,136 @@
             }
         }
 
+        function handleTagSearchClientes() {
+            const tagInput = document.getElementById('tag-search-input-clientes');
+            const clearTagBtn = document.getElementById('clear-tag-search-btn-clientes');
+            const tagQuery = tagInput ? tagInput.value.trim().toLowerCase().replace(/^#/, '') : '';
+
+            if (tagQuery === '') {
+                if (clearTagBtn) clearTagBtn.classList.add('hidden');
+                handleSearchClientes();
+                return;
+            }
+
+            if (clearTagBtn) clearTagBtn.classList.remove('hidden');
+
+            const generalQuery = document.getElementById('smart-search-input-clientes').value.trim().toLowerCase();
+
+            const processedLists = clientesData.map(list => {
+                const matchingItems = list.items.filter(item => {
+                    const itemTag = (item.etiqueta || '').toString().toLowerCase().replace(/^#/, '');
+                    const matchesTag = itemTag.includes(tagQuery);
+                    if (!matchesTag) return false;
+
+                    if (generalQuery !== '') {
+                        const name = (item.nombre || '').toLowerCase();
+                        const cedula = (item.cedula || '').toLowerCase();
+                        const phone = (item.telefono || '').toLowerCase();
+                        const details = (item.detalles || '').toLowerCase();
+                        return name.includes(generalQuery) || cedula.includes(generalQuery) || phone.includes(generalQuery) || details.includes(generalQuery) || itemTag.includes(generalQuery);
+                    }
+                    return true;
+                });
+
+                matchingItems.sort((a, b) => {
+                    const tagA = (a.etiqueta || '').toString().toLowerCase().replace(/^#/, '');
+                    const tagB = (b.etiqueta || '').toString().toLowerCase().replace(/^#/, '');
+                    if (tagA === tagQuery && tagB !== tagQuery) return -1;
+                    if (tagB === tagQuery && tagA !== tagQuery) return 1;
+                    return 0;
+                });
+
+                return { ...list, items: matchingItems };
+            });
+
+            // Si se encuentra la etiqueta, sea la lista que sea debe aparecer de primero
+            processedLists.sort((a, b) => {
+                const aHasMatches = a.items.length > 0;
+                const bHasMatches = b.items.length > 0;
+                if (aHasMatches && !bHasMatches) return -1;
+                if (!aHasMatches && bHasMatches) return 1;
+                return 0;
+            });
+
+            renderAccordionClientes(processedLists, true);
+        }
+
+        function handleSearchClientes() {
+            const tagInput = document.getElementById('tag-search-input-clientes');
+            const tagQuery = tagInput ? tagInput.value.trim() : '';
+
+            if (tagQuery !== '') {
+                handleTagSearchClientes();
+                return;
+            }
+
+            const query = document.getElementById('smart-search-input-clientes').value.trim().toLowerCase();
+            const clearBtn = document.getElementById('clear-search-btn-clientes');
+
+            if (query === '') {
+                if (clearBtn) clearBtn.classList.add('hidden');
+                sortClientesItems(clientesData);
+                renderAccordionClientes(clientesData, false);
+                return;
+            }
+
+            if (clearBtn) clearBtn.classList.remove('hidden');
+
+            const processedLists = clientesData.map(list => {
+                const matchingItems = list.items.filter(item => {
+                    const name = (item.nombre || '').toLowerCase();
+                    const cedula = (item.cedula || '').toLowerCase();
+                    const phone = (item.telefono || '').toLowerCase();
+                    const etiqueta = (item.etiqueta || '').toString().toLowerCase();
+                    const detalles = (item.detalles || '').toLowerCase();
+                    return name.includes(query) || cedula.includes(query) || phone.includes(query) || etiqueta.includes(query) || detalles.includes(query);
+                });
+                return { ...list, items: matchingItems };
+            });
+
+            renderAccordionClientes(processedLists, true);
+        }
+
+        function clearTagSearchClientes() {
+            const tagInput = document.getElementById('tag-search-input-clientes');
+            if (tagInput) tagInput.value = '';
+            const clearTagBtn = document.getElementById('clear-tag-search-btn-clientes');
+            if (clearTagBtn) clearTagBtn.classList.add('hidden');
+            handleSearchClientes();
+        }
+
+        function clearSearchClientes() {
+            document.getElementById('smart-search-input-clientes').value = '';
+            document.getElementById('clear-search-btn-clientes').classList.add('hidden');
+            const tagInput = document.getElementById('tag-search-input-clientes');
+            if (tagInput && tagInput.value.trim() !== '') {
+                handleTagSearchClientes();
+            } else {
+                sortClientesItems(clientesData);
+                renderAccordionClientes(clientesData, false);
+            }
+        }
+
+        function getNextEtiqueta() {
+            let maxEtiqueta = 0;
+            clientesData.forEach(list => {
+                if (list.items) {
+                    list.items.forEach(item => {
+                        const num = parseInt(item.etiqueta, 10);
+                        if (!isNaN(num) && num > maxEtiqueta) {
+                            maxEtiqueta = num;
+                        }
+                    });
+                }
+            });
+            return (maxEtiqueta + 1).toString();
+        }
+
         function openAddClienteModal() {
             const now = new Date();
-            const fechaStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('add-cliente-fecha').innerText = fechaStr;
+            const dateStr = now.toLocaleDateString('es-VE') + ' ' + now.toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('add-cliente-fecha').innerText = dateStr;
+
             document.getElementById('add-cliente-nombre').value = '';
             document.getElementById('add-cliente-telefono').value = '';
             document.getElementById('add-cliente-cedula').value = '';
@@ -1824,12 +2057,12 @@
             document.getElementById('add-cliente-detalles').value = '';
             document.getElementById('add-cliente-precio').value = '';
             document.getElementById('add-cliente-observacion').value = '';
-            
-            const radios = document.querySelectorAll('input[name="add-cliente-estado"]');
-            radios.forEach(r => r.checked = (r.value === 'En revisión'));
 
-            const randomTag = Math.floor(1000 + Math.random() * 9000).toString();
-            document.getElementById('add-cliente-etiqueta-preview').innerText = randomTag;
+            const nextTag = getNextEtiqueta();
+            document.getElementById('add-cliente-etiqueta-preview').innerText = nextTag;
+
+            const radios = document.getElementsByName('add-cliente-estado');
+            radios.forEach(r => { if(r.value === 'En revisión') r.checked = true; });
 
             const modal = document.getElementById('modal-add-cliente');
             const box = modal.querySelector('div');
@@ -1853,43 +2086,46 @@
             const cedula = document.getElementById('add-cliente-cedula').value.trim();
             const direccion = document.getElementById('add-cliente-direccion').value.trim();
             const detalles = document.getElementById('add-cliente-detalles').value.trim();
-            const precio = parseFloat(document.getElementById('add-cliente-precio').value) || 0;
+            const precioVal = document.getElementById('add-cliente-precio').value.trim();
             const observacion = document.getElementById('add-cliente-observacion').value.trim();
             const etiqueta = document.getElementById('add-cliente-etiqueta-preview').innerText;
-            
+
             let estado = 'En revisión';
-            const selectedRadio = document.querySelector('input[name="add-cliente-estado"]:checked');
-            if (selectedRadio) estado = selectedRadio.value;
+            const radios = document.getElementsByName('add-cliente-estado');
+            radios.forEach(r => { if(r.checked) estado = r.value; });
 
             const now = new Date();
-            const fechaStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const fechaStr = now.toLocaleDateString('es-VE') + ' ' + now.toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit' });
 
-            const newItem = {
+            const newClient = {
                 id: 'cli_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5),
-                nombre,
-                telefono,
-                cedula,
-                direccion,
-                detalles,
-                price: precio,
-                observacion,
-                etiqueta,
-                estado,
+                nombre: nombre,
+                telefono: telefono,
+                cedula: cedula,
+                direccion: direccion,
+                detalles: detalles,
+                precio: parseFloat(precioVal) || 0,
+                observacion: observacion,
+                etiqueta: etiqueta,
+                estado: estado,
                 fecha: fechaStr,
-                timestamp: Date.now(),
-                fechaCancelado: (estado === 'Entregado' || estado === 'Cancelado sin entregar') ? fechaStr : ''
+                timestamp: Date.now()
             };
 
             const targetListId = getListIdFromEstado(estado);
-            const targetList = clientesData.find(l => l.id === targetListId);
-            if (targetList) {
-                targetList.items.push(newItem);
+            const list = clientesData.find(l => l.id === targetListId);
+            if (list) {
+                list.items.unshift(newClient);
+            } else {
+                clientesData[0].items.unshift(newClient);
             }
 
             sortClientesItems(clientesData);
             saveClientesData();
             closeAddClienteModal();
-            handleSearchClientes();
+
+            const tagVal = document.getElementById('tag-search-input-clientes') ? document.getElementById('tag-search-input-clientes').value.trim() : '';
+            if (tagVal !== '') handleTagSearchClientes(); else handleSearchClientes();
         }
 
         function openEditClienteModal(listId, itemId) {
@@ -1901,15 +2137,16 @@
             document.getElementById('edit-cliente-id').value = itemId;
             document.getElementById('edit-cliente-list-id').value = listId;
             document.getElementById('edit-cliente-etiqueta').value = item.etiqueta || '';
-            document.getElementById('edit-cliente-etiqueta-preview').innerText = item.etiqueta || '----';
+            document.getElementById('edit-cliente-etiqueta-preview').innerText = item.etiqueta || '';
+
             document.getElementById('edit-cliente-fecha').innerText = item.fecha || '';
-            
-            const cancelContainer = document.getElementById('cancel-date-container');
+
+            const cancelDateContainer = document.getElementById('cancel-date-container');
             if (item.fechaCancelado) {
-                cancelContainer.classList.remove('hidden');
+                cancelDateContainer.classList.remove('hidden');
                 document.getElementById('edit-cliente-fecha-cancelado').innerText = item.fechaCancelado;
             } else {
-                cancelContainer.classList.add('hidden');
+                cancelDateContainer.classList.add('hidden');
             }
 
             document.getElementById('edit-cliente-nombre').value = item.nombre || '';
@@ -1917,12 +2154,12 @@
             document.getElementById('edit-cliente-cedula').value = item.cedula || '';
             document.getElementById('edit-cliente-direccion').value = item.direccion || '';
             document.getElementById('edit-cliente-detalles').value = item.detalles || '';
-            document.getElementById('edit-cliente-precio').value = item.price !== undefined ? item.price : '';
+            document.getElementById('edit-cliente-precio').value = item.precio !== undefined ? item.precio : '';
             document.getElementById('edit-cliente-observacion').value = item.observacion || '';
 
-            const radios = document.querySelectorAll('input[name="edit-cliente-estado"]');
+            const radios = document.getElementsByName('edit-cliente-estado');
             radios.forEach(r => {
-                r.checked = (r.value === (item.estado || 'En revisión'));
+                r.checked = (r.value === item.estado);
             });
 
             const modal = document.getElementById('modal-edit-cliente');
@@ -1943,155 +2180,85 @@
         function saveEditedCliente(e) {
             e.preventDefault();
             const itemId = document.getElementById('edit-cliente-id').value;
-            const oldListId = document.getElementById('edit-cliente-list-id').value;
-            
-            const oldList = clientesData.find(l => l.id === oldListId);
-            if (!oldList) return;
-            const itemIndex = oldList.items.findIndex(i => i.id === itemId);
-            if (itemIndex === -1) return;
-            const item = oldList.items[itemIndex];
+            const listId = document.getElementById('edit-cliente-list-id').value;
 
-            item.nombre = document.getElementById('edit-cliente-nombre').value.trim();
-            item.telefono = document.getElementById('edit-cliente-telefono').value.trim();
-            item.cedula = document.getElementById('edit-cliente-cedula').value.trim();
-            item.direccion = document.getElementById('edit-cliente-direccion').value.trim();
-            item.detalles = document.getElementById('edit-cliente-detalles').value.trim();
-            item.price = parseFloat(document.getElementById('edit-cliente-precio').value) || 0;
-            item.observacion = document.getElementById('edit-cliente-observacion').value.trim();
+            let sourceList = clientesData.find(l => l.id === listId);
+            let itemIndex = -1;
+            let item = null;
 
-            let newEstado = item.estado || 'En revisión';
-            const selectedRadio = document.querySelector('input[name="edit-cliente-estado"]:checked');
-            if (selectedRadio) newEstado = selectedRadio.value;
-
-            const now = new Date();
-            const fechaStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-            if (newEstado !== item.estado) {
-                if ((newEstado === 'Entregado' || newEstado === 'Cancelado sin entregar') && !item.fechaCancelado) {
-                    item.fechaCancelado = fechaStr;
-                } else if (newEstado !== 'Entregado' && newEstado !== 'Cancelado sin entregar') {
-                    item.fechaCancelado = '';
-                }
-                item.estado = newEstado;
+            if (sourceList) {
+                itemIndex = sourceList.items.findIndex(i => i.id === itemId);
+                if (itemIndex !== -1) item = sourceList.items[itemIndex];
             }
 
-            oldList.items.splice(itemIndex, 1);
-            
-            const targetListId = getListIdFromEstado(newEstado);
-            const targetList = clientesData.find(l => l.id === targetListId);
-            if (targetList) {
-                targetList.items.push(item);
+            if (!item) {
+                for (let l of clientesData) {
+                    const idx = l.items.findIndex(i => i.id === itemId);
+                    if (idx !== -1) {
+                        sourceList = l;
+                        itemIndex = idx;
+                        item = l.items[idx];
+                        break;
+                    }
+                }
+            }
+
+            if (!item) return;
+
+            const oldEstado = item.estado;
+            const newNombre = document.getElementById('edit-cliente-nombre').value.trim();
+            const newTelefono = document.getElementById('edit-cliente-telefono').value.trim();
+            const newCedula = document.getElementById('edit-cliente-cedula').value.trim();
+            const newDireccion = document.getElementById('edit-cliente-direccion').value.trim();
+            const newDetalles = document.getElementById('edit-cliente-detalles').value.trim();
+            const newPrecioVal = document.getElementById('edit-cliente-precio').value.trim();
+            const newObservacion = document.getElementById('edit-cliente-observacion').value.trim();
+
+            let newEstado = 'En revisión';
+            const radios = document.getElementsByName('edit-cliente-estado');
+            radios.forEach(r => { if(r.checked) newEstado = r.value; });
+
+            item.nombre = newNombre;
+            item.telefono = newTelefono;
+            item.cedula = newCedula;
+            item.direccion = newDireccion;
+            item.detalles = newDetalles;
+            item.precio = parseFloat(newPrecioVal) || 0;
+            item.observacion = newObservacion;
+
+            if (oldEstado !== newEstado) {
+                item.estado = newEstado;
+                if (newEstado === 'Entregado' || newEstado === 'Cancelado sin entregar') {
+                    const now = new Date();
+                    item.fechaCancelado = now.toLocaleDateString('es-VE') + ' ' + now.toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit' });
+                }
+
+                sourceList.items.splice(itemIndex, 1);
+                const newListId = getListIdFromEstado(newEstado);
+                const targetList = clientesData.find(l => l.id === newListId);
+                if (targetList) {
+                    targetList.items.unshift(item);
+                } else {
+                    sourceList.items.unshift(item);
+                }
             }
 
             sortClientesItems(clientesData);
             saveClientesData();
             closeEditClienteModal();
-            handleSearchClientes();
+
+            const tagVal = document.getElementById('tag-search-input-clientes') ? document.getElementById('tag-search-input-clientes').value.trim() : '';
+            if (tagVal !== '') handleTagSearchClientes(); else handleSearchClientes();
         }
 
         function deleteCliente(listId, itemId) {
-            if (!confirm('¿Estás seguro de que deseas eliminar este registro de cliente?')) return;
-            const list = clientesData.find(l => l.id === listId);
-            if (list) {
+            if (!confirm('¿Estás seguro de que deseas eliminar este cliente?')) return;
+            clientesData.forEach(list => {
                 list.items = list.items.filter(i => i.id !== itemId);
-                saveClientesData();
-                handleSearchClientes();
-            }
-        }
-
-        function handleSearchClientes() {
-            const query = document.getElementById('smart-search-input-clientes').value.trim().toLowerCase();
-            const clearBtn = document.getElementById('clear-search-btn-clientes');
-            const tagQuery = document.getElementById('tag-search-input-clientes') ? document.getElementById('tag-search-input-clientes').value.trim().toLowerCase() : '';
-
-            if (tagQuery !== '') {
-                handleTagSearchClientes();
-                return;
-            }
-
-            if (query === '') {
-                clearBtn.classList.add('hidden');
-                sortClientesItems(clientesData);
-                renderAccordionClientes(clientesData, false);
-                return;
-            }
-
-            clearBtn.classList.remove('hidden');
-
-            const processedLists = clientesData.map(list => {
-                const matchingItems = list.items.filter(item => {
-                    const nombre = (item.nombre || '').toLowerCase();
-                    const cedula = (item.cedula || '').toLowerCase();
-                    const etiqueta = (item.etiqueta || '').toLowerCase();
-                    const telefono = (item.telefono || '').toLowerCase();
-                    return nombre.includes(query) || cedula.includes(query) || etiqueta.includes(query) || telefono.includes(query);
-                });
-                return { ...list, items: matchingItems };
             });
-
-            renderAccordionClientes(processedLists, true);
-        }
-
-        function clearSearchClientes() {
-            document.getElementById('smart-search-input-clientes').value = '';
-            document.getElementById('clear-search-btn-clientes').classList.add('hidden');
-            const tagInput = document.getElementById('tag-search-input-clientes');
-            if(tagInput && tagInput.value.trim() !== '') {
-                handleTagSearchClientes();
-                return;
-            }
-            sortClientesItems(clientesData);
-            renderAccordionClientes(clientesData, false);
-        }
-
-        function handleTagSearchClientes() {
-            const tagQuery = document.getElementById('tag-search-input-clientes').value.trim().toLowerCase();
-            const clearTagBtn = document.getElementById('clear-tag-search-btn-clientes');
-            const generalQuery = document.getElementById('smart-search-input-clientes').value.trim().toLowerCase();
-
-            if (tagQuery === '') {
-                clearTagBtn.classList.add('hidden');
-                if (generalQuery !== '') {
-                    handleSearchClientes();
-                    return;
-                }
-                sortClientesItems(clientesData);
-                renderAccordionClientes(clientesData, false);
-                return;
-            }
-
-            clearTagBtn.classList.remove('hidden');
-
-            const processedLists = clientesData.map(list => {
-                const matchingItems = list.items.filter(item => {
-                    const etiqueta = (item.etiqueta || '').toLowerCase();
-                    const matchesTag = etiqueta.includes(tagQuery);
-                    if (!matchesTag) return false;
-                    
-                    if (generalQuery !== '') {
-                        const nombre = (item.nombre || '').toLowerCase();
-                        const cedula = (item.cedula || '').toLowerCase();
-                        const telefono = (item.telefono || '').toLowerCase();
-                        return nombre.includes(generalQuery) || cedula.includes(generalQuery) || telefono.includes(generalQuery);
-                    }
-                    return true;
-                });
-                return { ...list, items: matchingItems };
-            });
-
-            renderAccordionClientes(processedLists, true);
-        }
-
-        function clearTagSearchClientes() {
-            document.getElementById('tag-search-input-clientes').value = '';
-            document.getElementById('clear-tag-search-btn-clientes').classList.add('hidden');
-            const generalQuery = document.getElementById('smart-search-input-clientes').value.trim().toLowerCase();
-            if (generalQuery !== '') {
-                handleSearchClientes();
-                return;
-            }
-            sortClientesItems(clientesData);
-            renderAccordionClientes(clientesData, false);
+            saveClientesData();
+            const tagVal = document.getElementById('tag-search-input-clientes') ? document.getElementById('tag-search-input-clientes').value.trim() : '';
+            if (tagVal !== '') handleTagSearchClientes(); else handleSearchClientes();
         }
     </script>
 </body>
